@@ -1,5 +1,5 @@
 <?php
-
+#error_reporting(0);
 class Analis{
  
  public function __construct()
@@ -70,37 +70,26 @@ class short extends Analis{
     {
         $day=date('D');
         foreach($this->ceking() as $uri => $zrl){
-           if($day === $zrl['day'])
-           {
-               $link=$this->short();
-               if(!file_exists('key'))
-               {
-                   $this->baseUrl();
-                   echo "\033[1;32mvisit link \033[1;36m".$link['shortenedUrl'].PHP_EOL;
-                   $vi=readline("\033[1;34mInput_key:\033[0m ");
-                   
-                   if(strlen(md5(time())) !== strlen($vi))
-                   {
-                       die("\033[1;31mError your input KEY\033[0m".PHP_EOL);
-                       
-                   }else{
-                     echo "\033[1;32mSuccess input key\033[0m".PHP_EOL;
-                     $this->sev('key',$vi);
-                   }
+           if(!file_exists('key')){
+               $ky=$this->baseUrl();
+               foreach ($ky as $ct => $ft){
+                   echo "~>\033[1;32mvisit_key: \033[1;36m".$this->short()['shortenedUrl']."\033[0m".PHP_EOL;
+                   $vv=readline("[=>]input key: ");
+                   file_put_contents('key',$vv);
                }
-               if(strlen(file('key')[0]) !== strlen($zrl['signature'])){
+           }elseif(file_exists('key')){
+               $fl=file('key');
+               if(strlen($fl[0]) !== strlen($zrl['signature'])){
+                   echo "\033[1;31mDon't change key\n";
+                   unlink("key");
+                   continue;
+               }elseif($day !== $zrl['day']){
+                   echo "\033[1;33mSession key limit\n";
                    unlink('key');
-                   echo "\033[1;31mDon't change key\033[0m".PHP_EOL;
+                   continue;
                }
-           }
-           if($day !== $zrl['day'])
-           {
-               echo "\033[1;31msessions password limit\n";
-               unlink('key');
-           }
+          }
         }
-        
-       
     }
     public function sev($f,$d)
     {
